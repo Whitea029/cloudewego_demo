@@ -3,19 +3,32 @@ syntax = "proto3";
 package frontend.auth;
 
 import "api.proto";
+import "frontend/common.proto";
 
 option go_package = "frontend/auth";
 
-message Empty {}
 
-message LoginReq struct{
+message LoginReq {
     string email = 1 [(api.form)="email"];
     string password = 2 [(api.form)="password"];
+    string next = 3 [(api.query)="next"];
+}
+
+message RegisterReq {
+    string email = 1 [(api.form)="email"];
+    string password = 2 [(api.form)="password"];
+    string password_confirm = 3 [(api.form)="password_confirm"];
 }
 
 service AuthService {
-  rpc login(Empty) returns(Empty) {
-    option (api.get) = "/auth/login";
+  rpc login(LoginReq) returns(common.Empty) {
+    option (api.post) = "/auth/login";
+  }
+  rpc register(LoginReq) returns(common.Empty) {
+    option (api.post) = "/auth/register";
+  }
+  rpc logout(common.Empty) returns(common.Empty) {
+    option (api.post) = "/auth/logout";
   }
 }
 
