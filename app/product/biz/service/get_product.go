@@ -5,7 +5,7 @@ import (
 
 	"github.com/Whitea029/whmall/app/product/biz/dal/mysql"
 	"github.com/Whitea029/whmall/app/product/biz/model"
-	protuct "github.com/Whitea029/whmall/rpc_gen/kitex_gen/protuct"
+	product "github.com/Whitea029/whmall/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/kerrors"
 )
 
@@ -17,7 +17,7 @@ func NewGetProductService(ctx context.Context) *GetProductService {
 }
 
 // Run create note info
-func (s *GetProductService) Run(req *protuct.GetProductReq) (resp *protuct.GetProductResp, err error) {
+func (s *GetProductService) Run(req *product.GetProductReq) (resp *product.GetProductResp, err error) {
 	if req.Id == 0 {
 		return nil, kerrors.NewGRPCBizStatusError(2004001, "product id is required")
 	}
@@ -26,8 +26,8 @@ func (s *GetProductService) Run(req *protuct.GetProductReq) (resp *protuct.GetPr
 	if err != nil {
 		return nil, err
 	}
-	return &protuct.GetProductResp{
-		Product: &protuct.Product{
+	return &product.GetProductResp{
+		Product: &product.Product{
 			Id:          uint32(p.ID),
 			Name:        p.Name,
 			Description: p.Description,

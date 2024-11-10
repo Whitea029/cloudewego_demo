@@ -2,9 +2,9 @@ package product
 
 import (
 	"context"
-	protuct "github.com/Whitea029/whmall/rpc_gen/kitex_gen/protuct"
+	product "github.com/Whitea029/whmall/rpc_gen/kitex_gen/product"
 
-	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/protuct/productcatalogservice"
+	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/product/productcatalogservice"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/client/callopt"
 )
@@ -12,9 +12,9 @@ import (
 type RPCClient interface {
 	KitexClient() productcatalogservice.Client
 	Service() string
-	ListProducts(ctx context.Context, Req *protuct.ListProductsReq, callOptions ...callopt.Option) (r *protuct.ListProductsResp, err error)
-	GetProduct(ctx context.Context, Req *protuct.GetProductReq, callOptions ...callopt.Option) (r *protuct.GetProductResp, err error)
-	SearchProducts(ctx context.Context, Req *protuct.SearchProductsReq, callOptions ...callopt.Option) (r *protuct.SearchProductsResp, err error)
+	ListProducts(ctx context.Context, Req *product.ListProductsReq, callOptions ...callopt.Option) (r *product.ListProductsResp, err error)
+	GetProduct(ctx context.Context, Req *product.GetProductReq, callOptions ...callopt.Option) (r *product.GetProductResp, err error)
+	SearchProducts(ctx context.Context, Req *product.SearchProductsReq, callOptions ...callopt.Option) (r *product.SearchProductsResp, err error)
 }
 
 func NewRPCClient(dstService string, opts ...client.Option) (RPCClient, error) {
@@ -43,14 +43,14 @@ func (c *clientImpl) KitexClient() productcatalogservice.Client {
 	return c.kitexClient
 }
 
-func (c *clientImpl) ListProducts(ctx context.Context, Req *protuct.ListProductsReq, callOptions ...callopt.Option) (r *protuct.ListProductsResp, err error) {
+func (c *clientImpl) ListProducts(ctx context.Context, Req *product.ListProductsReq, callOptions ...callopt.Option) (r *product.ListProductsResp, err error) {
 	return c.kitexClient.ListProducts(ctx, Req, callOptions...)
 }
 
-func (c *clientImpl) GetProduct(ctx context.Context, Req *protuct.GetProductReq, callOptions ...callopt.Option) (r *protuct.GetProductResp, err error) {
+func (c *clientImpl) GetProduct(ctx context.Context, Req *product.GetProductReq, callOptions ...callopt.Option) (r *product.GetProductResp, err error) {
 	return c.kitexClient.GetProduct(ctx, Req, callOptions...)
 }
 
-func (c *clientImpl) SearchProducts(ctx context.Context, Req *protuct.SearchProductsReq, callOptions ...callopt.Option) (r *protuct.SearchProductsResp, err error) {
+func (c *clientImpl) SearchProducts(ctx context.Context, Req *product.SearchProductsReq, callOptions ...callopt.Option) (r *product.SearchProductsResp, err error) {
 	return c.kitexClient.SearchProducts(ctx, Req, callOptions...)
 }

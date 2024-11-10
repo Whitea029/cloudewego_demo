@@ -3,12 +3,12 @@
 package productcatalogservice
 
 import (
-	protuct "github.com/Whitea029/whmall/rpc_gen/kitex_gen/protuct"
+	product "github.com/Whitea029/whmall/rpc_gen/kitex_gen/product"
 	server "github.com/cloudwego/kitex/server"
 )
 
 // NewInvoker creates a server.Invoker with the given handler and options.
-func NewInvoker(handler protuct.ProductCatalogService, opts ...server.Option) server.Invoker {
+func NewInvoker(handler product.ProductCatalogService, opts ...server.Option) server.Invoker {
 	var options []server.Option
 
 	options = append(options, opts...)

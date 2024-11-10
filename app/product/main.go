@@ -6,7 +6,7 @@ import (
 
 	"github.com/Whitea029/whmall/app/product/biz/dal"
 	"github.com/Whitea029/whmall/app/product/conf"
-	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/protuct/productcatalogservice"
+	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/product/productcatalogservice"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"

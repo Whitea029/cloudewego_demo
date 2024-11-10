@@ -5,7 +5,7 @@ package productcatalogservice
 import (
 	"context"
 	"errors"
-	protuct "github.com/Whitea029/whmall/rpc_gen/kitex_gen/protuct"
+	product "github.com/Whitea029/whmall/rpc_gen/kitex_gen/product"
 	client "github.com/cloudwego/kitex/client"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"
 	streaming "github.com/cloudwego/kitex/pkg/streaming"
@@ -74,7 +74,7 @@ func NewServiceInfoForStreamClient() *kitex.ServiceInfo {
 
 func newServiceInfo(hasStreaming bool, keepStreamingMethods bool, keepNonStreamingMethods bool) *kitex.ServiceInfo {
 	serviceName := "ProductCatalogService"
-	handlerType := (*protuct.ProductCatalogService)(nil)
+	handlerType := (*product.ProductCatalogService)(nil)
 	methods := map[string]kitex.MethodInfo{}
 	for name, m := range serviceMethods {
 		if m.IsStreaming() && !keepStreamingMethods {
@@ -86,7 +86,7 @@ func newServiceInfo(hasStreaming bool, keepStreamingMethods bool, keepNonStreami
 		methods[name] = m
 	}
 	extra := map[string]interface{}{
-		"PackageName": "protuct",
+		"PackageName": "product",
 	}
 	if hasStreaming {
 		extra["streaming"] = hasStreaming
@@ -106,17 +106,17 @@ func listProductsHandler(ctx context.Context, handler interface{}, arg, result i
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(protuct.ListProductsReq)
+		req := new(product.ListProductsReq)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
-		resp, err := handler.(protuct.ProductCatalogService).ListProducts(ctx, req)
+		resp, err := handler.(product.ProductCatalogService).ListProducts(ctx, req)
 		if err != nil {
 			return err
 		}
 		return st.SendMsg(resp)
 	case *ListProductsArgs:
-		success, err := handler.(protuct.ProductCatalogService).ListProducts(ctx, s.Req)
+		success, err := handler.(product.ProductCatalogService).ListProducts(ctx, s.Req)
 		if err != nil {
 			return err
 		}
@@ -136,12 +136,12 @@ func newListProductsResult() interface{} {
 }
 
 type ListProductsArgs struct {
-	Req *protuct.ListProductsReq
+	Req *product.ListProductsReq
 }
 
 func (p *ListProductsArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(protuct.ListProductsReq)
+		p.Req = new(product.ListProductsReq)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -168,7 +168,7 @@ func (p *ListProductsArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *ListProductsArgs) Unmarshal(in []byte) error {
-	msg := new(protuct.ListProductsReq)
+	msg := new(product.ListProductsReq)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -176,9 +176,9 @@ func (p *ListProductsArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var ListProductsArgs_Req_DEFAULT *protuct.ListProductsReq
+var ListProductsArgs_Req_DEFAULT *product.ListProductsReq
 
-func (p *ListProductsArgs) GetReq() *protuct.ListProductsReq {
+func (p *ListProductsArgs) GetReq() *product.ListProductsReq {
 	if !p.IsSetReq() {
 		return ListProductsArgs_Req_DEFAULT
 	}
@@ -194,14 +194,14 @@ func (p *ListProductsArgs) GetFirstArgument() interface{} {
 }
 
 type ListProductsResult struct {
-	Success *protuct.ListProductsResp
+	Success *product.ListProductsResp
 }
 
-var ListProductsResult_Success_DEFAULT *protuct.ListProductsResp
+var ListProductsResult_Success_DEFAULT *product.ListProductsResp
 
 func (p *ListProductsResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(protuct.ListProductsResp)
+		p.Success = new(product.ListProductsResp)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -228,7 +228,7 @@ func (p *ListProductsResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *ListProductsResult) Unmarshal(in []byte) error {
-	msg := new(protuct.ListProductsResp)
+	msg := new(product.ListProductsResp)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -236,7 +236,7 @@ func (p *ListProductsResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *ListProductsResult) GetSuccess() *protuct.ListProductsResp {
+func (p *ListProductsResult) GetSuccess() *product.ListProductsResp {
 	if !p.IsSetSuccess() {
 		return ListProductsResult_Success_DEFAULT
 	}
@@ -244,7 +244,7 @@ func (p *ListProductsResult) GetSuccess() *protuct.ListProductsResp {
 }
 
 func (p *ListProductsResult) SetSuccess(x interface{}) {
-	p.Success = x.(*protuct.ListProductsResp)
+	p.Success = x.(*product.ListProductsResp)
 }
 
 func (p *ListProductsResult) IsSetSuccess() bool {
@@ -259,17 +259,17 @@ func getProductHandler(ctx context.Context, handler interface{}, arg, result int
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(protuct.GetProductReq)
+		req := new(product.GetProductReq)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
-		resp, err := handler.(protuct.ProductCatalogService).GetProduct(ctx, req)
+		resp, err := handler.(product.ProductCatalogService).GetProduct(ctx, req)
 		if err != nil {
 			return err
 		}
 		return st.SendMsg(resp)
 	case *GetProductArgs:
-		success, err := handler.(protuct.ProductCatalogService).GetProduct(ctx, s.Req)
+		success, err := handler.(product.ProductCatalogService).GetProduct(ctx, s.Req)
 		if err != nil {
 			return err
 		}
@@ -289,12 +289,12 @@ func newGetProductResult() interface{} {
 }
 
 type GetProductArgs struct {
-	Req *protuct.GetProductReq
+	Req *product.GetProductReq
 }
 
 func (p *GetProductArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(protuct.GetProductReq)
+		p.Req = new(product.GetProductReq)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -321,7 +321,7 @@ func (p *GetProductArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *GetProductArgs) Unmarshal(in []byte) error {
-	msg := new(protuct.GetProductReq)
+	msg := new(product.GetProductReq)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -329,9 +329,9 @@ func (p *GetProductArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var GetProductArgs_Req_DEFAULT *protuct.GetProductReq
+var GetProductArgs_Req_DEFAULT *product.GetProductReq
 
-func (p *GetProductArgs) GetReq() *protuct.GetProductReq {
+func (p *GetProductArgs) GetReq() *product.GetProductReq {
 	if !p.IsSetReq() {
 		return GetProductArgs_Req_DEFAULT
 	}
@@ -347,14 +347,14 @@ func (p *GetProductArgs) GetFirstArgument() interface{} {
 }
 
 type GetProductResult struct {
-	Success *protuct.GetProductResp
+	Success *product.GetProductResp
 }
 
-var GetProductResult_Success_DEFAULT *protuct.GetProductResp
+var GetProductResult_Success_DEFAULT *product.GetProductResp
 
 func (p *GetProductResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(protuct.GetProductResp)
+		p.Success = new(product.GetProductResp)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -381,7 +381,7 @@ func (p *GetProductResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *GetProductResult) Unmarshal(in []byte) error {
-	msg := new(protuct.GetProductResp)
+	msg := new(product.GetProductResp)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -389,7 +389,7 @@ func (p *GetProductResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *GetProductResult) GetSuccess() *protuct.GetProductResp {
+func (p *GetProductResult) GetSuccess() *product.GetProductResp {
 	if !p.IsSetSuccess() {
 		return GetProductResult_Success_DEFAULT
 	}
@@ -397,7 +397,7 @@ func (p *GetProductResult) GetSuccess() *protuct.GetProductResp {
 }
 
 func (p *GetProductResult) SetSuccess(x interface{}) {
-	p.Success = x.(*protuct.GetProductResp)
+	p.Success = x.(*product.GetProductResp)
 }
 
 func (p *GetProductResult) IsSetSuccess() bool {
@@ -412,17 +412,17 @@ func searchProductsHandler(ctx context.Context, handler interface{}, arg, result
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(protuct.SearchProductsReq)
+		req := new(product.SearchProductsReq)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
-		resp, err := handler.(protuct.ProductCatalogService).SearchProducts(ctx, req)
+		resp, err := handler.(product.ProductCatalogService).SearchProducts(ctx, req)
 		if err != nil {
 			return err
 		}
 		return st.SendMsg(resp)
 	case *SearchProductsArgs:
-		success, err := handler.(protuct.ProductCatalogService).SearchProducts(ctx, s.Req)
+		success, err := handler.(product.ProductCatalogService).SearchProducts(ctx, s.Req)
 		if err != nil {
 			return err
 		}
@@ -442,12 +442,12 @@ func newSearchProductsResult() interface{} {
 }
 
 type SearchProductsArgs struct {
-	Req *protuct.SearchProductsReq
+	Req *product.SearchProductsReq
 }
 
 func (p *SearchProductsArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(protuct.SearchProductsReq)
+		p.Req = new(product.SearchProductsReq)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -474,7 +474,7 @@ func (p *SearchProductsArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *SearchProductsArgs) Unmarshal(in []byte) error {
-	msg := new(protuct.SearchProductsReq)
+	msg := new(product.SearchProductsReq)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -482,9 +482,9 @@ func (p *SearchProductsArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var SearchProductsArgs_Req_DEFAULT *protuct.SearchProductsReq
+var SearchProductsArgs_Req_DEFAULT *product.SearchProductsReq
 
-func (p *SearchProductsArgs) GetReq() *protuct.SearchProductsReq {
+func (p *SearchProductsArgs) GetReq() *product.SearchProductsReq {
 	if !p.IsSetReq() {
 		return SearchProductsArgs_Req_DEFAULT
 	}
@@ -500,14 +500,14 @@ func (p *SearchProductsArgs) GetFirstArgument() interface{} {
 }
 
 type SearchProductsResult struct {
-	Success *protuct.SearchProductsResp
+	Success *product.SearchProductsResp
 }
 
-var SearchProductsResult_Success_DEFAULT *protuct.SearchProductsResp
+var SearchProductsResult_Success_DEFAULT *product.SearchProductsResp
 
 func (p *SearchProductsResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(protuct.SearchProductsResp)
+		p.Success = new(product.SearchProductsResp)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -534,7 +534,7 @@ func (p *SearchProductsResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *SearchProductsResult) Unmarshal(in []byte) error {
-	msg := new(protuct.SearchProductsResp)
+	msg := new(product.SearchProductsResp)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -542,7 +542,7 @@ func (p *SearchProductsResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *SearchProductsResult) GetSuccess() *protuct.SearchProductsResp {
+func (p *SearchProductsResult) GetSuccess() *product.SearchProductsResp {
 	if !p.IsSetSuccess() {
 		return SearchProductsResult_Success_DEFAULT
 	}
@@ -550,7 +550,7 @@ func (p *SearchProductsResult) GetSuccess() *protuct.SearchProductsResp {
 }
 
 func (p *SearchProductsResult) SetSuccess(x interface{}) {
-	p.Success = x.(*protuct.SearchProductsResp)
+	p.Success = x.(*product.SearchProductsResp)
 }
 
 func (p *SearchProductsResult) IsSetSuccess() bool {
@@ -571,7 +571,7 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) ListProducts(ctx context.Context, Req *protuct.ListProductsReq) (r *protuct.ListProductsResp, err error) {
+func (p *kClient) ListProducts(ctx context.Context, Req *product.ListProductsReq) (r *product.ListProductsResp, err error) {
 	var _args ListProductsArgs
 	_args.Req = Req
 	var _result ListProductsResult
@@ -581,7 +581,7 @@ func (p *kClient) ListProducts(ctx context.Context, Req *protuct.ListProductsReq
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetProduct(ctx context.Context, Req *protuct.GetProductReq) (r *protuct.GetProductResp, err error) {
+func (p *kClient) GetProduct(ctx context.Context, Req *product.GetProductReq) (r *product.GetProductResp, err error) {
 	var _args GetProductArgs
 	_args.Req = Req
 	var _result GetProductResult
@@ -591,7 +591,7 @@ func (p *kClient) GetProduct(ctx context.Context, Req *protuct.GetProductReq) (r
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) SearchProducts(ctx context.Context, Req *protuct.SearchProductsReq) (r *protuct.SearchProductsResp, err error) {
+func (p *kClient) SearchProducts(ctx context.Context, Req *product.SearchProductsReq) (r *product.SearchProductsResp, err error) {
 	var _args SearchProductsArgs
 	_args.Req = Req
 	var _result SearchProductsResult

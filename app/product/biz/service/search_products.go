@@ -5,7 +5,7 @@ import (
 
 	"github.com/Whitea029/whmall/app/product/biz/dal/mysql"
 	"github.com/Whitea029/whmall/app/product/biz/model"
-	protuct "github.com/Whitea029/whmall/rpc_gen/kitex_gen/protuct"
+	product "github.com/Whitea029/whmall/rpc_gen/kitex_gen/product"
 )
 
 type SearchProductsService struct {
@@ -16,15 +16,15 @@ func NewSearchProductsService(ctx context.Context) *SearchProductsService {
 }
 
 // Run create note info
-func (s *SearchProductsService) Run(req *protuct.SearchProductsReq) (resp *protuct.SearchProductsResp, err error) {
+func (s *SearchProductsService) Run(req *product.SearchProductsReq) (resp *product.SearchProductsResp, err error) {
 	productQuery := model.NewProductQuery(s.ctx, mysql.DB)
 	p, err := productQuery.SearchProduct(req.Query)
 	if err != nil {
 		return nil, err
 	}
-	results := make([]*protuct.Product, 0, len(p))
+	results := make([]*product.Product, 0, len(p))
 	for _, v := range p {
-		results = append(results, &protuct.Product{
+		results = append(results, &product.Product{
 			Id:          uint32(v.ID),
 			Name:        v.Name,
 			Description: v.Description,
@@ -32,5 +32,5 @@ func (s *SearchProductsService) Run(req *protuct.SearchProductsReq) (resp *protu
 			Price:       v.Price,
 		})
 	}
-	return &protuct.SearchProductsResp{Results: results}, nil
+	return &product.SearchProductsResp{Results: results}, nil
 }

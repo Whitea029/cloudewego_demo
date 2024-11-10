@@ -4,16 +4,16 @@ package productcatalogservice
 
 import (
 	"context"
-	protuct "github.com/Whitea029/whmall/rpc_gen/kitex_gen/protuct"
+	product "github.com/Whitea029/whmall/rpc_gen/kitex_gen/product"
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
 )
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	ListProducts(ctx context.Context, Req *protuct.ListProductsReq, callOptions ...callopt.Option) (r *protuct.ListProductsResp, err error)
-	GetProduct(ctx context.Context, Req *protuct.GetProductReq, callOptions ...callopt.Option) (r *protuct.GetProductResp, err error)
-	SearchProducts(ctx context.Context, Req *protuct.SearchProductsReq, callOptions ...callopt.Option) (r *protuct.SearchProductsResp, err error)
+	ListProducts(ctx context.Context, Req *product.ListProductsReq, callOptions ...callopt.Option) (r *product.ListProductsResp, err error)
+	GetProduct(ctx context.Context, Req *product.GetProductReq, callOptions ...callopt.Option) (r *product.GetProductResp, err error)
+	SearchProducts(ctx context.Context, Req *product.SearchProductsReq, callOptions ...callopt.Option) (r *product.SearchProductsResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -45,17 +45,17 @@ type kProductCatalogServiceClient struct {
 	*kClient
 }
 
-func (p *kProductCatalogServiceClient) ListProducts(ctx context.Context, Req *protuct.ListProductsReq, callOptions ...callopt.Option) (r *protuct.ListProductsResp, err error) {
+func (p *kProductCatalogServiceClient) ListProducts(ctx context.Context, Req *product.ListProductsReq, callOptions ...callopt.Option) (r *product.ListProductsResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.ListProducts(ctx, Req)
 }
 
-func (p *kProductCatalogServiceClient) GetProduct(ctx context.Context, Req *protuct.GetProductReq, callOptions ...callopt.Option) (r *protuct.GetProductResp, err error) {
+func (p *kProductCatalogServiceClient) GetProduct(ctx context.Context, Req *product.GetProductReq, callOptions ...callopt.Option) (r *product.GetProductResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetProduct(ctx, Req)
 }
 
-func (p *kProductCatalogServiceClient) SearchProducts(ctx context.Context, Req *protuct.SearchProductsReq, callOptions ...callopt.Option) (r *protuct.SearchProductsResp, err error) {
+func (p *kProductCatalogServiceClient) SearchProducts(ctx context.Context, Req *product.SearchProductsReq, callOptions ...callopt.Option) (r *product.SearchProductsResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.SearchProducts(ctx, Req)
 }
