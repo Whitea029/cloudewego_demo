@@ -5,7 +5,7 @@ import (
 
 	"github.com/Whitea029/whmall/app/product/biz/dal/mysql"
 	"github.com/Whitea029/whmall/app/product/biz/model"
-	protuct "github.com/Whitea029/whmall/rpc_gen/kitex_gen/protuct"
+	product "github.com/Whitea029/whmall/rpc_gen/kitex_gen/product"
 )
 
 type ListProductsService struct {
@@ -16,16 +16,16 @@ func NewListProductsService(ctx context.Context) *ListProductsService {
 }
 
 // Run create note info
-func (s *ListProductsService) Run(req *protuct.ListProductsReq) (resp *protuct.ListProductsResp, err error) {
+func (s *ListProductsService) Run(req *product.ListProductsReq) (resp *product.ListProductsResp, err error) {
 	categoryQuery := model.NewCategoryQuery(s.ctx, mysql.DB)
 	c, err := categoryQuery.GetProductsByCategoryName(req.CategoryName)
 	if err != nil {
 		return nil, err
 	}
-	resp = &protuct.ListProductsResp{}
+	resp = &product.ListProductsResp{}
 	for _, v1 := range c {
 		for _, v2 := range v1.Products {
-			resp.Products = append(resp.Products, &protuct.Product{
+			resp.Products = append(resp.Products, &product.Product{
 				Id:          uint32(v2.ID),
 				Name:        v2.Name,
 				Description: v2.Description,

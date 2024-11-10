@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
+	product "github.com/Whitea029/whmall/rpc_gen/kitex_gen/product"
 	"testing"
-	protuct "github.com/Whitea029/whmall/rpc_gen/kitex_gen/protuct"
 )
 
 func TestSearchProducts_Run(t *testing.T) {
@@ -11,7 +11,7 @@ func TestSearchProducts_Run(t *testing.T) {
 	s := NewSearchProductsService(ctx)
 	// init req and assert value
 
-	req := &protuct.SearchProductsReq{}
+	req := &product.SearchProductsReq{}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)

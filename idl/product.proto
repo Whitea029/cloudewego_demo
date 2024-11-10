@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package protuct;
+package product;
 
-option  go_package = "/protuct";
+option  go_package = "/product";
 
 message Product {
     uint32 id = 1;
