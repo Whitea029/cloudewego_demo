@@ -6,6 +6,7 @@ import (
 	"github.com/Whitea029/whmall/app/checkout/conf"
 	checkoutUtils "github.com/Whitea029/whmall/app/checkout/utils"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/cart/cartservice"
+	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/order/orderservice"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/payment/paymentservice"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/product/productcatalogservice"
 	"github.com/cloudwego/kitex/client"
@@ -19,6 +20,7 @@ var (
 	CartCLient    cartservice.Client
 	ProductClient productcatalogservice.Client
 	PaymentClient paymentservice.Client
+	OrderClient   orderservice.Client
 	once          sync.Once
 )
 
@@ -27,7 +29,22 @@ func InitClient() {
 		initCartClient()
 		initProductClient()
 		initPaymentClient()
+		initOrderClient()
 	})
+}
+
+func initOrderClient() {
+	var opts []client.Option
+	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
+	checkoutUtils.MustHandleError(err)
+	opts = append(opts, client.WithResolver(r))
+	opts = append(opts,
+		client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: conf.GetConf().Kitex.Service}),
+		client.WithTransportProtocol(transport.GRPC),
+		client.WithMetaHandler(transmeta.ClientHTTP2Handler),
+	)
+	OrderClient, err = orderservice.NewClient("order", opts...)
+	checkoutUtils.MustHandleError(err)
 }
 
 func initProductClient() {

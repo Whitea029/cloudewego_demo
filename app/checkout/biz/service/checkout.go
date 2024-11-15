@@ -2,15 +2,16 @@ package service
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/Whitea029/whmall/app/checkout/infra/rpc"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/cart"
 	checkout "github.com/Whitea029/whmall/rpc_gen/kitex_gen/checkout"
+	rpcorder "github.com/Whitea029/whmall/rpc_gen/kitex_gen/order"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/payment"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/kerrors"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/google/uuid"
 )
 
 type CheckoutService struct {
@@ -22,6 +23,7 @@ func NewCheckoutService(ctx context.Context) *CheckoutService {
 
 // Run create note info
 func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.CheckoutResp, err error) {
+	// get cart
 	cartResp, err := rpc.CartCLient.GetCart(s.ctx, &cart.GetCartReq{
 		UserId: req.UserId,
 	})
@@ -31,8 +33,14 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	if cartResp == nil || cartResp.Cart.Items == nil {
 		return nil, kerrors.NewGRPCBizStatusError(5004001, "cart is empty")
 	}
-	var total float32
+
+	var (
+		total float32
+		oi    []*rpcorder.OrderItem
+	)
+
 	for _, item := range cartResp.Cart.Items {
+		// get product
 		productResp, err := rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{
 			Id: item.ProductId,
 		})
@@ -44,10 +52,40 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		}
 		p := productResp.Product
 		total += p.Price * float32(item.Quantity)
+
+		oi = append(oi, &rpcorder.OrderItem{
+			Item: &cart.CartItem{
+				ProductId: item.ProductId,
+				Quantity:  item.Quantity,
+			},
+			Cost: p.Price * float32(item.Quantity),
+		})
 	}
+
 	var orderId string
-	u, _ := uuid.NewRandom()
-	orderId = u.String()
+	zipCodeInt, _ := strconv.Atoi(req.Address.ZipCode)
+
+	// place order
+	orderResp, err := rpc.OrderClient.PlaceOrder(s.ctx, &rpcorder.PlaceOrderReq{
+		UserId: req.UserId,
+		Email:  req.Email,
+		Address: &rpcorder.Address{
+			StreetAddress: req.Address.StreetAddress,
+			City:          req.Address.City,
+			State:         req.Address.State,
+			ZipCode:       int32(zipCodeInt),
+			Country:       req.Address.Country,
+		},
+		OrderItems: oi,
+	})
+	if err != nil {
+		return nil, kerrors.NewGRPCBizStatusError(5005002, err.Error())
+	}
+	if orderResp != nil && orderResp.Order != nil {
+		orderId = orderResp.Order.OrderId
+	}
+
+	// charge
 	payReq := &payment.ChargeReq{
 		Amount:  total,
 		OrderId: orderId,

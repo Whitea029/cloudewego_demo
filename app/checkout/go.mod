@@ -8,7 +8,7 @@ replace (
 )
 
 require (
-	github.com/Whitea029/whmall/rpc_gen v0.0.0-00010101000000-000000000000
+	github.com/Whitea029/whmall/rpc_gen v0.0.0-20241115011737-e2ece130478f
 	github.com/cloudwego/kitex v0.11.3
 	github.com/kitex-contrib/obs-opentelemetry/logging/logrus v0.0.0-20241108060226-a2d88c8d88e9
 	github.com/kr/pretty v0.3.1
