@@ -5,16 +5,17 @@ import (
 
 	"github.com/Whitea029/whmall/app/cart/conf"
 	cartUtils "github.com/Whitea029/whmall/app/cart/utils"
+	clientsuite "github.com/Whitea029/whmall/common/clientsuite"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/product/productcatalogservice"
-	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/user/userservice"
 	"github.com/cloudwego/kitex/client"
-	consul "github.com/kitex-contrib/registry-consul"
 )
 
 var (
-	UserClient    userservice.Client
 	ProductClient productcatalogservice.Client
 	once          sync.Once
+	ServiceName   = conf.GetConf().Kitex.Service
+	RegistryAddr  = conf.GetConf().Registry.RegistryAddress[0]
+	err           error
 )
 
 func Init() {
@@ -24,11 +25,12 @@ func Init() {
 }
 
 func initProductClient() {
-	var opts []client.Option
-	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
-	cartUtils.MustHandleError(err)
-	opts = append(opts, client.WithResolver(r))
-
+	opts := []client.Option{
+		client.WithSuite(clientsuite.CommonClientSuite{
+			CurrentServiceName: ServiceName,
+			RegistryAddr:       RegistryAddr,
+		}),
+	}
 	ProductClient, err = productcatalogservice.NewClient("product", opts...)
 	cartUtils.MustHandleError(err)
 }

@@ -5,15 +5,12 @@ import (
 
 	"github.com/Whitea029/whmall/app/checkout/conf"
 	checkoutUtils "github.com/Whitea029/whmall/app/checkout/utils"
+	"github.com/Whitea029/whmall/common/clientsuite"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/cart/cartservice"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/order/orderservice"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/payment/paymentservice"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/product/productcatalogservice"
 	"github.com/cloudwego/kitex/client"
-	"github.com/cloudwego/kitex/pkg/rpcinfo"
-	"github.com/cloudwego/kitex/pkg/transmeta"
-	"github.com/cloudwego/kitex/transport"
-	consul "github.com/kitex-contrib/registry-consul"
 )
 
 var (
@@ -22,6 +19,9 @@ var (
 	PaymentClient paymentservice.Client
 	OrderClient   orderservice.Client
 	once          sync.Once
+	ServiceName   = conf.GetConf().Kitex.Service
+	RegistryAddr  = conf.GetConf().Registry.RegistryAddress[0]
+	err           error
 )
 
 func InitClient() {
@@ -34,57 +34,45 @@ func InitClient() {
 }
 
 func initOrderClient() {
-	var opts []client.Option
-	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
-	checkoutUtils.MustHandleError(err)
-	opts = append(opts, client.WithResolver(r))
-	opts = append(opts,
-		client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: conf.GetConf().Kitex.Service}),
-		client.WithTransportProtocol(transport.GRPC),
-		client.WithMetaHandler(transmeta.ClientHTTP2Handler),
-	)
+	opts := []client.Option{
+		client.WithSuite(clientsuite.CommonClientSuite{
+			CurrentServiceName: ServiceName,
+			RegistryAddr:       RegistryAddr,
+		}),
+	}
 	OrderClient, err = orderservice.NewClient("order", opts...)
 	checkoutUtils.MustHandleError(err)
 }
 
 func initProductClient() {
-	var opts []client.Option
-	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
-	checkoutUtils.MustHandleError(err)
-	opts = append(opts, client.WithResolver(r))
-	opts = append(opts,
-		client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: conf.GetConf().Kitex.Service}),
-		client.WithTransportProtocol(transport.GRPC),
-		client.WithMetaHandler(transmeta.ClientHTTP2Handler),
-	)
+	opts := []client.Option{
+		client.WithSuite(clientsuite.CommonClientSuite{
+			CurrentServiceName: ServiceName,
+			RegistryAddr:       RegistryAddr,
+		}),
+	}
 	ProductClient, err = productcatalogservice.NewClient("product", opts...)
 	checkoutUtils.MustHandleError(err)
 }
 
 func initPaymentClient() {
-	var opts []client.Option
-	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
-	checkoutUtils.MustHandleError(err)
-	opts = append(opts, client.WithResolver(r))
-	opts = append(opts,
-		client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: conf.GetConf().Kitex.Service}),
-		client.WithTransportProtocol(transport.GRPC),
-		client.WithMetaHandler(transmeta.ClientHTTP2Handler),
-	)
+	opts := []client.Option{
+		client.WithSuite(clientsuite.CommonClientSuite{
+			CurrentServiceName: ServiceName,
+			RegistryAddr:       RegistryAddr,
+		}),
+	}
 	PaymentClient, err = paymentservice.NewClient("payment", opts...)
 	checkoutUtils.MustHandleError(err)
 }
 
 func initCartClient() {
-	var opts []client.Option
-	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
-	checkoutUtils.MustHandleError(err)
-	opts = append(opts, client.WithResolver(r))
-	opts = append(opts,
-		client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: conf.GetConf().Kitex.Service}),
-		client.WithTransportProtocol(transport.GRPC),
-		client.WithMetaHandler(transmeta.ClientHTTP2Handler),
-	)
+	opts := []client.Option{
+		client.WithSuite(clientsuite.CommonClientSuite{
+			CurrentServiceName: ServiceName,
+			RegistryAddr:       RegistryAddr,
+		}),
+	}
 	CartCLient, err = cartservice.NewClient("cart", opts...)
 	checkoutUtils.MustHandleError(err)
 }
