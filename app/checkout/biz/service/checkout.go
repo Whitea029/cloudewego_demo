@@ -4,14 +4,18 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/Whitea029/whmall/app/checkout/infra/mq"
 	"github.com/Whitea029/whmall/app/checkout/infra/rpc"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/cart"
 	checkout "github.com/Whitea029/whmall/rpc_gen/kitex_gen/checkout"
+	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/email"
 	rpcorder "github.com/Whitea029/whmall/rpc_gen/kitex_gen/order"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/payment"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/kerrors"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/nats-io/nats.go"
+	"google.golang.org/protobuf/proto"
 )
 
 type CheckoutService struct {
@@ -105,6 +109,15 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	if err != nil {
 		return nil, kerrors.NewGRPCBizStatusError(5005002, err.Error())
 	}
+	data, _ := proto.Marshal(&email.EmailReq{
+		From:        "whitea0029@gmail.com",
+		To:          req.Email,
+		ContentType: "text/plain",
+		Subject:     "You have just created an order in Pomelo shop",
+		Content:     "You have just created an order in Pomelo shop, your order id is " + orderId,
+	})
+	msg := &nats.Msg{Subject: "email", Data: data}
+	_ = mq.Nc.PublishMsg(msg)
 	klog.Info("paymentResp: ", paymentResp)
 	return &checkout.CheckoutResp{OrderId: orderId, TransactionId: paymentResp.TransactionId}, nil
 }

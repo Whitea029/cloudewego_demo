@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/Whitea029/whmall/app/checkout/conf"
+	"github.com/Whitea029/whmall/app/checkout/infra/mq"
 	"github.com/Whitea029/whmall/app/checkout/infra/rpc"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/checkout/checkoutservice"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -19,6 +20,7 @@ import (
 func main() {
 	opts := kitexInit()
 	rpc.InitClient()
+	mq.Init()
 
 	svr := checkoutservice.NewServer(new(CheckoutServiceImpl), opts...)
 

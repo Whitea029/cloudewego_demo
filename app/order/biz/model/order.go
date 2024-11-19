@@ -30,7 +30,7 @@ func (o *Order) TableName() string {
 
 func (oq OrderQuery) ListOrder(userId uint32) ([]*Order, error) {
 	var orders []*Order
-	err := oq.db.WithContext(*oq.ctx).Where("user_id = ?", userId).Preload("OrderItems").Find(&Order{}).Error
+	err := oq.db.WithContext(*oq.ctx).Where(&Order{UserId: userId}).Preload("OrderItems").Find(&orders).Error
 	if err != nil {
 		return nil, err
 	}
