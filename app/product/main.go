@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"net"
 	"time"
 
@@ -25,6 +26,8 @@ var (
 func main() {
 	err := godotenv.Load()
 	mtl.InitMetrics(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
+	p := mtl.InitTracing(ServiceName)
+	defer p.Shutdown(context.Background())
 	if err != nil {
 		klog.Error(err.Error())
 	}
