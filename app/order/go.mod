@@ -9,12 +9,12 @@ replace (
 )
 
 require (
-	github.com/Whitea029/whmall/common v0.0.0-00010101000000-000000000000
-	github.com/Whitea029/whmall/rpc_gen v0.0.0-20241115011737-e2ece130478f
+	github.com/Whitea029/whmall/common v0.0.0-20241120042357-6ea9253854b6
+	github.com/Whitea029/whmall/rpc_gen v0.0.0-20241120042357-6ea9253854b6
 	github.com/cloudwego/kitex v0.11.3
 	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
-	github.com/kitex-contrib/obs-opentelemetry/logging/logrus v0.0.0-20241108060226-a2d88c8d88e9
+	github.com/kitex-contrib/obs-opentelemetry/logging/logrus v0.0.0-20241120035129-55da83caab1b
 	github.com/kr/pretty v0.3.1
 	github.com/redis/go-redis/v9 v9.7.0
 	go.uber.org/zap v1.27.0
@@ -74,7 +74,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kitex-contrib/monitor-prometheus v0.2.0 // indirect
 	github.com/kitex-contrib/obs-opentelemetry v0.2.9 // indirect
-	github.com/kitex-contrib/registry-consul v0.0.0-20240508100819-2905e45155c1 // indirect
+	github.com/kitex-contrib/registry-consul v0.1.0 // indirect
 	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
 	github.com/kr/text v0.2.0 // indirect
@@ -102,7 +102,6 @@ require (
 	go.opentelemetry.io/contrib/propagators/b3 v1.32.0 // indirect
 	go.opentelemetry.io/contrib/propagators/ot v1.32.0 // indirect
 	go.opentelemetry.io/otel v1.32.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlpmetric v0.43.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.32.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.32.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.32.0 // indirect

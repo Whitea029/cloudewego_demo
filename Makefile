@@ -18,25 +18,56 @@ gen-cart:
 	@cd rpc_gen && cwgo client --type RPC --service cart --module github.com/Whitea029/whmall/rpc_gen --I ../idl --idl ../idl/cart.proto
 	@cd app/cart && cwgo server --type RPC --service cart --module github.com/Whitea029/whmall/app/cart --pass "-use github.com/Whitea029/whmall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/cart.proto
 
-PHONY: gen-payment
+.PHONY: gen-payment
 gen-payment:
 	@cd rpc_gen && cwgo client --type RPC --service payment --module github.com/Whitea029/whmall/rpc_gen --I ../idl --idl ../idl/payment.proto
 	@cd app/payment && cwgo server --type RPC --service payment --module github.com/Whitea029/whmall/app/payment --pass "-use github.com/Whitea029/whmall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/payment.proto
 
-PHONY: gen-checkout
+.PHONY: gen-checkout
 gen-checkout:
 	@cd rpc_gen && cwgo client --type RPC --service checkout --module github.com/Whitea029/whmall/rpc_gen --I ../idl --idl ../idl/checkout.proto
 	@cd app/checkout && cwgo server --type RPC --service checkout --module github.com/Whitea029/whmall/app/checkout --pass "-use github.com/Whitea029/whmall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/checkout.proto
 
 
-PHONY: gen-order
+.PHONY: gen-order
 gen-order:
 	@cd rpc_gen && cwgo client --type RPC --service order --module github.com/Whitea029/whmall/rpc_gen --I ../idl --idl ../idl/order.proto
 	@cd app/order && cwgo server --type RPC --service order --module github.com/Whitea029/whmall/app/order --pass "-use github.com/Whitea029/whmall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/order.proto
 
 
-PHONY: gen-email
+.PHONY: gen-email
 gen-email:
 	@cd rpc_gen && cwgo client --type RPC --service email --module github.com/Whitea029/whmall/rpc_gen --I ../idl --idl ../idl/email.proto
 	@cd app/email && cwgo server --type RPC --service email --module github.com/Whitea029/whmall/app/email --pass "-use github.com/Whitea029/whmall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/email.proto
 
+.PHONY: tidy-all
+tidy-all:
+	cd app/user && go mod tidy
+	cd app/product && go mod tidy
+	cd app/cart && go mod tidy
+	cd app/payment && go mod tidy
+	cd app/checkout && go mod tidy
+	cd app/order && go mod tidy
+	cd app/email && go mod tidy
+	cd app/frontend && go mod tidy
+	cd common && go mod tidy
+
+.PHONY: update-and-clean
+update-and-clean:
+	cd app/user && go get -u ./... 
+	cd app/product && go get -u ./... 
+	cd app/cart && go get -u ./... 
+	cd app/payment && go get -u ./... 
+	cd app/checkout && go get -u ./... 
+	cd app/order && go get -u ./... 
+	cd app/email && go get -u ./... 
+	cd app/frontend && go get -u ./... 
+	cd common && go get -u ./... 
+
+.PHONY: build-frontend
+build-frontend:
+	docker build -f ./deploy/Dockerfile.frontend -t frontend:${v} .
+
+.PHONY: build-svc
+build-svc:
+	docker build -f ./deploy/Dockerfile.svc -t ${svc}:${v} --build-arg SVC=${svc} .
