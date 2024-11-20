@@ -30,7 +30,7 @@ func (p ProductQuery) GetById(productID uint) (product Product, err error) {
 }
 
 func (p ProductQuery) SearchProduct(q string) (products []Product, err error) {
-	err = p.db.WithContext(p.ctx).Model(&Product{}).Find(&products, "name like or description like ?", "%"+q+"%", "%"+q+"%").Error
+	err = p.db.WithContext(p.ctx).Model(&Product{}).Find(&products, "name like ? or description like ?", "%"+q+"%", "%"+q+"%").Error
 	return
 }
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+
 	"github.com/Whitea029/whmall/app/product/biz/service"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/product"
 )
@@ -25,6 +26,5 @@ func (s *ProductCatalogServiceImpl) GetProduct(ctx context.Context, req *product
 // SearchProducts implements the ProductCatalogServiceImpl interface.
 func (s *ProductCatalogServiceImpl) SearchProducts(ctx context.Context, req *product.SearchProductsReq) (resp *product.SearchProductsResp, err error) {
 	resp, err = service.NewSearchProductsService(ctx).Run(req)
-
 	return resp, err
 }

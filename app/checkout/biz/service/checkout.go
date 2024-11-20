@@ -2,15 +2,20 @@ package service
 
 import (
 	"context"
+	"strconv"
 
+	"github.com/Whitea029/whmall/app/checkout/infra/mq"
 	"github.com/Whitea029/whmall/app/checkout/infra/rpc"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/cart"
 	checkout "github.com/Whitea029/whmall/rpc_gen/kitex_gen/checkout"
+	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/email"
+	rpcorder "github.com/Whitea029/whmall/rpc_gen/kitex_gen/order"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/payment"
 	"github.com/Whitea029/whmall/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/kerrors"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/google/uuid"
+	"github.com/nats-io/nats.go"
+	"google.golang.org/protobuf/proto"
 )
 
 type CheckoutService struct {
@@ -22,6 +27,7 @@ func NewCheckoutService(ctx context.Context) *CheckoutService {
 
 // Run create note info
 func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.CheckoutResp, err error) {
+	// get cart
 	cartResp, err := rpc.CartCLient.GetCart(s.ctx, &cart.GetCartReq{
 		UserId: req.UserId,
 	})
@@ -31,8 +37,14 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	if cartResp == nil || cartResp.Cart.Items == nil {
 		return nil, kerrors.NewGRPCBizStatusError(5004001, "cart is empty")
 	}
-	var total float32
+
+	var (
+		total float32
+		oi    []*rpcorder.OrderItem
+	)
+
 	for _, item := range cartResp.Cart.Items {
+		// get product
 		productResp, err := rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{
 			Id: item.ProductId,
 		})
@@ -44,10 +56,40 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		}
 		p := productResp.Product
 		total += p.Price * float32(item.Quantity)
+
+		oi = append(oi, &rpcorder.OrderItem{
+			Item: &cart.CartItem{
+				ProductId: item.ProductId,
+				Quantity:  item.Quantity,
+			},
+			Cost: p.Price * float32(item.Quantity),
+		})
 	}
+
 	var orderId string
-	u, _ := uuid.NewRandom()
-	orderId = u.String()
+	zipCodeInt, _ := strconv.Atoi(req.Address.ZipCode)
+
+	// place order
+	orderResp, err := rpc.OrderClient.PlaceOrder(s.ctx, &rpcorder.PlaceOrderReq{
+		UserId: req.UserId,
+		Email:  req.Email,
+		Address: &rpcorder.Address{
+			StreetAddress: req.Address.StreetAddress,
+			City:          req.Address.City,
+			State:         req.Address.State,
+			ZipCode:       int32(zipCodeInt),
+			Country:       req.Address.Country,
+		},
+		OrderItems: oi,
+	})
+	if err != nil {
+		return nil, kerrors.NewGRPCBizStatusError(5005002, err.Error())
+	}
+	if orderResp != nil && orderResp.Order != nil {
+		orderId = orderResp.Order.OrderId
+	}
+
+	// charge
 	payReq := &payment.ChargeReq{
 		Amount:  total,
 		OrderId: orderId,
@@ -67,6 +109,15 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	if err != nil {
 		return nil, kerrors.NewGRPCBizStatusError(5005002, err.Error())
 	}
+	data, _ := proto.Marshal(&email.EmailReq{
+		From:        "whitea0029@gmail.com",
+		To:          req.Email,
+		ContentType: "text/plain",
+		Subject:     "You have just created an order in Pomelo shop",
+		Content:     "You have just created an order in Pomelo shop, your order id is " + orderId,
+	})
+	msg := &nats.Msg{Subject: "email", Data: data}
+	_ = mq.Nc.PublishMsg(msg)
 	klog.Info("paymentResp: ", paymentResp)
 	return &checkout.CheckoutResp{OrderId: orderId, TransactionId: paymentResp.TransactionId}, nil
 }
