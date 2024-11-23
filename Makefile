@@ -71,3 +71,25 @@ build-frontend:
 .PHONY: build-svc
 build-svc:
 	docker build -f ./deploy/Dockerfile.svc -t ${svc}:${v} --build-arg SVC=${svc} .
+
+.PHONY: build-svc-all
+build-svc-all:
+	docker build -f ./deploy/Dockerfile.frontend -t frontend:${v} .
+	docker build -f ./deploy/Dockerfile.svc -t cart:${v} --build-arg SVC=cart .
+	docker build -f ./deploy/Dockerfile.svc -t email:${v} --build-arg SVC=email .
+	docker build -f ./deploy/Dockerfile.svc -t payment:${v} --build-arg SVC=payment .
+	docker build -f ./deploy/Dockerfile.svc -t order:${v} --build-arg SVC=order .
+	docker build -f ./deploy/Dockerfile.svc -t product:${v} --build-arg SVC=product .
+	docker build -f ./deploy/Dockerfile.svc -t user:${v} --build-arg SVC=user .
+	docker build -f ./deploy/Dockerfile.svc -t checkout:${v} --build-arg SVC=checkout .
+
+.PHONY: load-all-images
+load-all-images:
+	kind load docker-image product:${v} --name whmall-dev 
+	kind load docker-image frontend:${v} --name whmall-dev 
+	kind load docker-image email:${v} --name whmall-dev 
+	kind load docker-image payment:${v} --name whmall-dev 
+	kind load docker-image user:${v} --name whmall-dev 
+	kind load docker-image checkout:${v} --name whmall-dev 
+	kind load docker-image cart:${v} --name whmall-dev 
+	kind load docker-image order:${v} --name whmall-dev 
