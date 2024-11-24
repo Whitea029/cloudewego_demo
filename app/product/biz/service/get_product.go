@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/Whitea029/whmall/app/product/biz/dal/mysql"
+	"github.com/Whitea029/whmall/app/product/biz/dal/redis"
 	"github.com/Whitea029/whmall/app/product/biz/model"
 	product "github.com/Whitea029/whmall/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/kerrors"
@@ -21,7 +22,7 @@ func (s *GetProductService) Run(req *product.GetProductReq) (resp *product.GetPr
 	if req.Id == 0 {
 		return nil, kerrors.NewGRPCBizStatusError(2004001, "product id is required")
 	}
-	prodcutQuery := model.NewProductQuery(s.ctx, mysql.DB)
+	prodcutQuery := model.NewCacheProductQuery(s.ctx, mysql.DB, redis.RedisClient)
 	p, err := prodcutQuery.GetById(uint(req.Id))
 	if err != nil {
 		return nil, err
